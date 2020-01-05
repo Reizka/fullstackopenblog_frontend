@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import loginService from "../services/loginService";
 import blogService from "../services/blogService";
 
-const Signup = (setUser, setErrorMessage) => {
+const Signup = (setUser, _user, setErrorMessage) => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +16,8 @@ const Signup = (setUser, setErrorMessage) => {
         username,
         password
       });
+
+      console.log("response:", user);
       window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
 
       blogService.setToken(user.token);
@@ -23,6 +25,8 @@ const Signup = (setUser, setErrorMessage) => {
       setName("");
       setUsername("");
       setPassword("");
+      console.log("response received");
+      console.log(_user);
     } catch (exception) {
       setErrorMessage("wrong credentials");
       setTimeout(() => {

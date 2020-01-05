@@ -7,17 +7,32 @@ const Blog = ({ blog }) => (
   </div>
 );
 
-const BlogForm = ({ setErrorMessage }) => {
+const getAllBlogs = async (setErrorMessage, setBlog) => {
+  console.log("starting");
+  try {
+    const blogs = await blogService.getAll();
+    console.log(blogs);
+    const sortedBlogs = blogs.map(b => {
+      console.log(b);
+      return Blog(b);
+    });
+
+    console.log("mapped", sortedBlogs);
+    return sortedBlogs;
+  } catch (error) {
+    console.log("error", error);
+    setErrorMessage("could not get blogs");
+  }
+};
+
+const CreatePostForm = setErrorMessage => {
   const [blogPost, setBlogPost] = useState({});
   const [blog, setBlog] = useState(null);
 
   const handleBlogPost = async event => {
     event.preventDefault();
     try {
-      const blog = await blogService.postBlogPost({
-        blogPost
-      });
-
+      const blog = await blogService.postBlogPost({ blogPost });
       setBlog(blog);
       setBlogPost("");
     } catch (exception) {
@@ -36,4 +51,4 @@ const BlogForm = ({ setErrorMessage }) => {
   );
 };
 
-export default { Blog, BlogForm };
+export default { Blog, CreatePostForm, getAllBlogs };

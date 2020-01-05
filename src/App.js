@@ -1,35 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import SignUp from "./components/SignUp";
 import Blog from "./components/Blog";
 
-const Notification = ({ message }) => {
-  return (
-    <div>
-      <p>{message}</p>
-    </div>
-  );
-};
 function App() {
   const [user, setUser] = useState(null);
+  const [blog, setBlog] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  return (
-    <div className="App">
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await Blog.getAllBlogs(setErrorMessage);
+      console.log("RE: ", response);
+      setBlog(response);
+    };
+    fetchData();
+  }, []);
+
+  console.log(blog);
+  return <div className="App">{blog}</div>;
+}
+/*
+ <div className="App">
       <h1>Blog Posts</h1>
+      {Blog.GetAll(setErrorMessage)}
+
       {errorMessage !== null && Notification(errorMessage)}
 
       <h2>Login</h2>
       {user === null ? (
-        SignUp(setUser, setErrorMessage)
+        SignUp(setUser, user, setErrorMessage)
       ) : (
         <div>
           <p>{user.name} logged in</p>
-          {Blog.BlogForm(setErrorMessage)}
+          {Blog.GetAll(setErrorMessage)}
         </div>
       )}
       <h2>Blogs</h2>
     </div>
-  );
-}
-
+*/
 export default App;
