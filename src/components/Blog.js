@@ -1,54 +1,119 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import blogService from "../services/blogService";
+import Notification from "./Notification";
+import Togglable from "./Togglable";
 
-const Blog = ({ blog }) => (
-  <div>
-    {blog.title} {blog.author}
-  </div>
-);
+const Blog = ({ user }) => {
+  const [blogs, setBlogs] = useState(null);
 
-const getAllBlogs = async (setErrorMessage, setBlog) => {
-  console.log("starting");
+  const blogFormRef = React.createRef();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await blogService.getAll();
+      setBlogs(response);
+    };
+    fetchData();
+  }, []);
+
+  const addBlogPost = newPost => {
+    blogFormRef.current.toggleVisibility();
+    const aBlogs = blogs.concat(newPost);
+    setBlogs(aBlogs);
+  };
+
+  return (
+    <>
+      <Togglable buttonLabel="Create Blog" ref={blogFormRef}>
+        <CreatePostForm user={user} addBlogPost={addBlogPost} />
+      </Togglable>
+      <FormattedBlogs blogs={blogs} />
+    </>
+  );
+};
+
+const FormattedBlogs = ({ blogs }) => {
   try {
-    const blogs = await blogService.getAll();
-    console.log(blogs);
-    const sortedBlogs = blogs.map(b => {
-      console.log(b);
-      return Blog(b);
-    });
-
-    console.log("mapped", sortedBlogs);
-    return sortedBlogs;
+    if (!blogs) {
+      return <></>;
+    } else {
+      const formatedBlogs = blogs.map(b => {
+        return (
+          <div>
+            {b.title} {b.author}
+          </div>
+        );
+      });
+      return formatedBlogs;
+    }
   } catch (error) {
     console.log("error", error);
-    setErrorMessage("could not get blogs");
   }
 };
 
-const CreatePostForm = setErrorMessage => {
-  const [blogPost, setBlogPost] = useState({});
-  const [blog, setBlog] = useState(null);
-
+const CreatePostForm = ({ user, addBlogPost }) => {
+  const [message, setMessage] = useState(null);
+  const [blogTitle, setBlogTitle] = useState("");
+  const [blogUrl, setBlogUrl] = useState("");
+  console.log("1");
+  //const [blogText, setBlogText] = useState("");
   const handleBlogPost = async event => {
     event.preventDefault();
     try {
-      const blog = await blogService.postBlogPost({ blogPost });
-      setBlog(blog);
-      setBlogPost("");
+      if (blogTitle === "") {
+        setMessage("No title given!");
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
+      } else {
+        const blog = await blogService.create({
+          title: blogTitle,
+          url: blogUrl
+        });
+        //setBlogText("");
+        setBlogTitle("");
+        setBlogUrl("");
+        console.log(blog, "sent");
+        addBlogPost(blog);
+        setMessage(`new blog ${blog.title} added`);
+      }
     } catch (exception) {
-      setErrorMessage("could not post blog");
+      console.log(exception);
+      setMessage("could not post blog");
       setTimeout(() => {
-        setErrorMessage(null);
+        setMessage(null);
       }, 5000);
     }
   };
 
   return (
-    <form onSubmit={handleBlogPost}>
-      <input value={blogPost} onChange={handleBlogPost} />
-      <button type="submit">save</button>
-    </form>
+    <div>
+      <Notification message={message} />
+
+      <form onSubmit={handleBlogPost}>
+        <div class="create blog">Author:{user.name}</div>
+        <div class="create blog">
+          title:
+          <input
+            type="text"
+            value={blogTitle}
+            name="Title"
+            onChange={({ target }) => setBlogTitle(target.value)}
+          />
+        </div>
+        <div class="create blog">
+          url:
+          <input
+            type="text"
+            value={blogUrl}
+            name="Url"
+            onChange={({ target }) => setBlogUrl(target.value)}
+          />
+        </div>
+        <button type="submit">save</button>
+      </form>
+    </div>
   );
 };
 
-export default { Blog, CreatePostForm, getAllBlogs };
+export default Blog;

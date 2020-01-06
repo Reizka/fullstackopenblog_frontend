@@ -8,7 +8,6 @@ const setToken = newToken => {
 const getAll = async () => {
   try {
     const response = await axios.get(baseUrl);
-    console.log("RE0:", response.data);
     return response.data;
   } catch (error) {
     console.log("blogservice getAll error: ", error);
@@ -35,5 +34,6 @@ const update = (id, newObject) => {
 export default {
   getAll,
   create,
-  update
+  update,
+  setToken
 };
