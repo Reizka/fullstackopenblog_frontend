@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from "react";
 import blogService from "../services/blogService";
 import Notification from "./Notification";
-import Togglable from "./Togglable";
+import { LikeBlog } from "./LikeBlogButton";
+import { RemoveBlog } from "./RemoveBlogButton";
+import tgl from "./Togglable";
+import { largeToSmallLikesSort } from "../utility/sorter";
 
+const Togglable = tgl.Togglable;
+const TogglableField = tgl.TogglableField;
 const Blog = ({ user }) => {
   const [blogs, setBlogs] = useState(null);
-
   const blogFormRef = React.createRef();
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await blogService.getAll();
+      console.log(response);
       setBlogs(response);
     };
     fetchData();
@@ -27,21 +32,36 @@ const Blog = ({ user }) => {
       <Togglable buttonLabel="Create Blog" ref={blogFormRef}>
         <CreatePostForm user={user} addBlogPost={addBlogPost} />
       </Togglable>
-      <FormattedBlogs blogs={blogs} />
+      <FormattedBlogs blogs={blogs} setBlogs={setBlogs} user={user} />
     </>
   );
 };
 
-const FormattedBlogs = ({ blogs }) => {
+const FormattedBlogs = ({ blogs, setBlogs, user }) => {
   try {
     if (!blogs) {
       return <></>;
     } else {
-      const formatedBlogs = blogs.map(b => {
+      const bs = largeToSmallLikesSort(blogs);
+      const formatedBlogs = bs.map((b, index) => {
         return (
-          <div>
-            {b.title} {b.author}
-          </div>
+          <li key={b.id}>
+            <TogglableField buttonLabel={b.title}>
+              <BlogContent
+                url={b.url}
+                author={b.author}
+                title={b.title}
+                likes={b.likes}
+              />
+              <LikeBlog blogs={blogs} id={b.id} setBlogs={setBlogs} />
+              <RemoveBlog
+                blogs={blogs}
+                blog={b}
+                user={user}
+                setBlogs={setBlogs}
+              />
+            </TogglableField>
+          </li>
         );
       });
       return formatedBlogs;
@@ -51,12 +71,29 @@ const FormattedBlogs = ({ blogs }) => {
   }
 };
 
+const BlogContent = props => {
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5
+  };
+
+  return (
+    <div style={blogStyle}>
+      <p>Author: {props.author}</p>
+      <p>Title: {props.title}</p>
+      <p>Likes:{props.likes}</p>
+      <p>url: {props.url}</p>
+    </div>
+  );
+};
+
 const CreatePostForm = ({ user, addBlogPost }) => {
   const [message, setMessage] = useState(null);
   const [blogTitle, setBlogTitle] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
-  console.log("1");
-  //const [blogText, setBlogText] = useState("");
   const handleBlogPost = async event => {
     event.preventDefault();
     try {
@@ -70,7 +107,6 @@ const CreatePostForm = ({ user, addBlogPost }) => {
           title: blogTitle,
           url: blogUrl
         });
-        //setBlogText("");
         setBlogTitle("");
         setBlogUrl("");
         console.log(blog, "sent");
@@ -91,8 +127,8 @@ const CreatePostForm = ({ user, addBlogPost }) => {
       <Notification message={message} />
 
       <form onSubmit={handleBlogPost}>
-        <div class="create blog">Author:{user.name}</div>
-        <div class="create blog">
+        <div className="create blog">Author:{user.name}</div>
+        <div className="create blog">
           title:
           <input
             type="text"
@@ -101,7 +137,7 @@ const CreatePostForm = ({ user, addBlogPost }) => {
             onChange={({ target }) => setBlogTitle(target.value)}
           />
         </div>
-        <div class="create blog">
+        <div className="create blog">
           url:
           <input
             type="text"

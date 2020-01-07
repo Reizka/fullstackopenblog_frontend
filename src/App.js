@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import LoginForm from "./components/LoginForm";
 import Blog from "./components/Blog";
-import Togglable from "./components/Togglable";
-import loginService from "./services/loginService";
+import tgl from "./components/Togglable";
 import blogService from "./services/blogService";
 
+const Togglable = tgl.Togglable;
 function App() {
   const [user, setUser] = useState(null);
 
@@ -25,8 +25,6 @@ function App() {
     };
   };
 
-  console.log("USER: ", user);
-
   if (user === null) {
     return (
       <Togglable buttonLabel="Show Login form">
@@ -40,9 +38,8 @@ function App() {
         <button name="logout" type="submit" onClick={logOut()}>
           logout
         </button>
-        <Togglable buttonLabel="Show Blogs">
-          <Blog user={user} />
-        </Togglable>
+
+        <Blog user={user} />
       </div>
     );
   }

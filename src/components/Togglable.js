@@ -22,10 +22,32 @@ const Togglable = React.forwardRef((props, ref) => {
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility}>Hide Login Form</button>
+        <button onClick={toggleVisibility}>Close</button>
       </div>
     </div>
   );
 });
 
-export default Togglable;
+const TogglableField = props => {
+  const [visible, setVisible] = useState(false);
+
+  const hideWhenVisible = { display: visible ? "none" : "" };
+  const showWhenVisible = { display: visible ? "" : "none" };
+
+  const toggleVisibility = () => {
+    setVisible(!visible);
+  };
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <div onClick={toggleVisibility}>{props.buttonLabel}</div>
+      </div>
+      <div style={showWhenVisible} onClick={toggleVisibility}>
+        {props.children}
+      </div>
+    </div>
+  );
+};
+
+export default { Togglable, TogglableField };

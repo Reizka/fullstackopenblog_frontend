@@ -1,14 +1,9 @@
-import React, {
-  useState
-} from "react";
+import React, { useState } from "react";
 import Notification from "./Notification";
 import loginService from "../services/loginService";
 import blogService from "../services/blogService";
 
-const LoginForm = ({
-  setUser,
-  setErrorMessage
-}) => {
+const LoginForm = ({ setUser, setErrorMessage }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
@@ -34,48 +29,31 @@ const LoginForm = ({
     }
   };
 
-  return ( <
-    div >
-    <
-    Notification message = {
-      message
-    }
-    /> <
-    form onSubmit = {
-      handleLogin
-    } >
-    <
-    div >
-    username <
-    input type = "text"
-    value = {
-      username
-    }
-    name = "Username"
-    onChange = {
-      ({
-        target
-      }) => setUsername(target.value)
-    }
-    /> <
-    /div> <
-    div >
-    password <
-    input type = "password"
-    value = {
-      password
-    }
-    name = "Password"
-    onChange = {
-      ({
-        target
-      }) => setPassword(target.value)
-    }
-    /> <
-    /div> <
-    button type = "submit" > login < /button> <
-    /form> <
-    /div>
+  return (
+    <div>
+      <Notification message={message} />{" "}
+      <form onSubmit={handleLogin}>
+        <div>
+          username{" "}
+          <input
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />{" "}
+        </div>{" "}
+        <div>
+          password{" "}
+          <input
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />{" "}
+        </div>{" "}
+        <button type="submit"> login </button>{" "}
+      </form>{" "}
+    </div>
   );
 };
 
