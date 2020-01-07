@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import LoginForm from './components/LoginForm';
-import Blog from './components/Blog';
+import BlogView from './components/BlogView';
 import tgl from './components/Togglable';
 import blogService from './services/blogService';
 
@@ -39,7 +39,7 @@ function App() {
           logout
         </button>
 
-        <Blog user={user} />
+        <BlogView user={user} />
       </div>
     );
   }

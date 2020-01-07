@@ -2,57 +2,56 @@ import React, { useState } from 'react';
 import Notification from './Notification';
 import loginService from '../services/loginService';
 import blogService from '../services/blogService';
-
+import { useField,useMessage } from '../utility/customHooks';
 const LoginForm = ({ setUser }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(null);
+  const message = useMessage('message');
+  const username =  useField('text');
+  const password =  useField('password');
+
   const handleLogin = async event => {
     event.preventDefault();
-    try {
-      const user = await loginService.login({
-        username,
-        password
-      });
-
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUsername('');
-      setPassword('');
-      setUser(user);
-    } catch (exception) {
-      console.log(exception);
-      setMessage('wrong credentials');
+    if(username.value ==='' || password.value===''){
+      message.set('username or password missing!')
       setTimeout(() => {
-        setMessage(null);
+        message.set('');
       }, 5000);
-    }
-  };
+    }else{
+      try {
+        const user = await loginService.login({
+          username: username.value,
+          password: password.value
+        });
 
+        window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user));
+        blogService.setToken(user.token);
+        password.reset();
+        username.reset();
+        setUser(user);
+      } catch (exception) {
+        console.log('LOGIN',exception);
+        message.set('wrong credentials');
+        setTimeout(() => {
+          message.set('');
+        }, 5000);
+      }
+    }
+
+  };
+  console.log(message);
   return (
     <div>
-      <Notification message={message} />{' '}
+      <Notification message={message.msg} />
       <form onSubmit={handleLogin}>
         <div>
-          username{' '}
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />{' '}
-        </div>{' '}
+          username
+          <input  {type,value,changeOn, ...username} = username/>
+        </div>
         <div>
-          password{' '}
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />{' '}
-        </div>{' '}
-        <button type="submit"> login </button>{' '}
-      </form>{' '}
+          password
+          <input {...password}/>
+        </div>
+        <button type="submit"> login </button>
+      </form>
     </div>
   );
 };
