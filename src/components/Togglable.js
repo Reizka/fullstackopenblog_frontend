@@ -1,9 +1,10 @@
-import React, { useState, useImperativeHandle } from "react";
+import React, { useState, useImperativeHandle } from 'react';
+import PropTypes from 'prop-types';
 const Togglable = React.forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
+  const hideWhenVisible = { display: visible ? 'none' : '' };
+  const showWhenVisible = { display: visible ? '' : 'none' };
 
   const toggleVisibility = () => {
     setVisible(!visible);
@@ -31,8 +32,8 @@ const Togglable = React.forwardRef((props, ref) => {
 const TogglableField = props => {
   const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
+  const hideWhenVisible = { display: visible ? 'none' : '' };
+  const showWhenVisible = { display: visible ? '' : 'none' };
 
   const toggleVisibility = () => {
     setVisible(!visible);
@@ -48,6 +49,14 @@ const TogglableField = props => {
       </div>
     </div>
   );
+};
+
+TogglableField.propTypes = {
+  buttonLabel: PropTypes.string.isRequired
+};
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired
 };
 
 export default { Togglable, TogglableField };

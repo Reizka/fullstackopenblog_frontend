@@ -1,10 +1,10 @@
-import React from "react";
-import blogService from "../services/blogService";
+import React from 'react';
+import blogService from '../services/blogService';
 
 export const RemoveBlog = props => {
   const _blogs = [...props.blogs];
   const removeThisBlog = async key => {
-    console.log("removing", key);
+    console.log('removing', key);
     await blogService.remove(key);
 
     const uBlogs = _blogs.filter(b => {

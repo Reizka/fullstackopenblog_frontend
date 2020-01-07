@@ -1,5 +1,5 @@
-import React from "react";
-import blogService from "../services/blogService";
+import React from 'react';
+import blogService from '../services/blogService';
 export const LikeBlog = props => {
   const _blogs = [...props.blogs];
   const like = async key => {
@@ -27,7 +27,7 @@ export const LikeBlog = props => {
       name="like"
       onClick={({ target }) => like(target.value)}
     >
-      Like{" "}
+      Like{' '}
     </button>
   );
 };

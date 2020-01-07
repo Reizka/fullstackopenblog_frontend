@@ -1,5 +1,5 @@
-import axios from "axios";
-const baseUrl = "/api/blogposts";
+import axios from 'axios';
+const baseUrl = '/api/blogposts';
 let token = null;
 
 const setToken = newToken => {
@@ -10,7 +10,7 @@ const getAll = async () => {
     const response = await axios.get(baseUrl);
     return response.data;
   } catch (error) {
-    console.log("blogservice getAll error: ", error);
+    console.log('blogservice getAll error: ', error);
     return null;
   }
 };

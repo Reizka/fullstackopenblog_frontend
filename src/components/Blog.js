@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import blogService from "../services/blogService";
-import Notification from "./Notification";
-import { LikeBlog } from "./LikeBlogButton";
-import { RemoveBlog } from "./RemoveBlogButton";
-import tgl from "./Togglable";
-import { largeToSmallLikesSort } from "../utility/sorter";
+import React, { useState, useEffect } from 'react';
+import blogService from '../services/blogService';
+import Notification from './Notification';
+import { LikeBlog } from './LikeBlogButton';
+import { RemoveBlog } from './RemoveBlogButton';
+import tgl from './Togglable';
+import { largeToSmallLikesSort } from '../utility/sorter';
 
 const Togglable = tgl.Togglable;
 const TogglableField = tgl.TogglableField;
@@ -43,7 +43,7 @@ const FormattedBlogs = ({ blogs, setBlogs, user }) => {
       return <></>;
     } else {
       const bs = largeToSmallLikesSort(blogs);
-      const formatedBlogs = bs.map((b, index) => {
+      const formatedBlogs = bs.map(b => {
         return (
           <li key={b.id}>
             <TogglableField buttonLabel={b.title}>
@@ -67,7 +67,7 @@ const FormattedBlogs = ({ blogs, setBlogs, user }) => {
       return formatedBlogs;
     }
   } catch (error) {
-    console.log("error", error);
+    console.log('error', error);
   }
 };
 
@@ -75,7 +75,7 @@ const BlogContent = props => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: "solid",
+    border: 'solid',
     borderWidth: 1,
     marginBottom: 5
   };
@@ -92,13 +92,13 @@ const BlogContent = props => {
 
 const CreatePostForm = ({ user, addBlogPost }) => {
   const [message, setMessage] = useState(null);
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogUrl, setBlogUrl] = useState('');
   const handleBlogPost = async event => {
     event.preventDefault();
     try {
-      if (blogTitle === "") {
-        setMessage("No title given!");
+      if (blogTitle === '') {
+        setMessage('No title given!');
         setTimeout(() => {
           setMessage(null);
         }, 5000);
@@ -107,15 +107,15 @@ const CreatePostForm = ({ user, addBlogPost }) => {
           title: blogTitle,
           url: blogUrl
         });
-        setBlogTitle("");
-        setBlogUrl("");
-        console.log(blog, "sent");
+        setBlogTitle('');
+        setBlogUrl('');
+        console.log(blog, 'sent');
         addBlogPost(blog);
         setMessage(`new blog ${blog.title} added`);
       }
     } catch (exception) {
       console.log(exception);
-      setMessage("could not post blog");
+      setMessage('could not post blog');
       setTimeout(() => {
         setMessage(null);
       }, 5000);
